@@ -3,16 +3,16 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>CareLoop</title>
+<title>Docly</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;1,300&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
 :root {
-  --navy: #0a1628;
-  --navy2: #0f1f38;
-  --navy3: #162840;
-  --panel: #111d2e;
-  --card: #162233;
+  --navy: #040a14;
+  --navy2: #060e1a;
+  --navy3: #091522;
+  --panel: #060d1a;
+  --card: #0a1423;
   --border: rgba(255,255,255,0.07);
   --teal: #00c9b1;
   --teal2: #00a898;
@@ -45,7 +45,7 @@ body {
   display: flex;
   align-items: center;
   justify-content: center;
-  background: radial-gradient(ellipse 80% 60% at 50% 0%, #0d2a4a 0%, var(--navy) 70%);
+  background: radial-gradient(ellipse 80% 60% at 50% 0%, #08203a 0%, var(--navy) 70%);
   position: relative;
   overflow: hidden;
 }
@@ -557,6 +557,60 @@ body {
 .tag-red { background:rgba(255,90,90,0.1); color:var(--red); border:1px solid rgba(255,90,90,0.2); }
 
 .scroll-y { overflow-y:auto; }
+/* ── MED CALENDAR ─────────────────────────────────── */
+.week-strip {
+  display:grid; grid-template-columns:repeat(7,1fr); gap:8px;
+  margin-bottom:16px;
+}
+.day-col {
+  background:var(--card); border:1px solid var(--border);
+  border-radius:10px; overflow:hidden; min-height:120px;
+}
+.day-col.today { border-color:rgba(0,201,177,0.35); }
+.day-header {
+  padding:8px 10px; text-align:center;
+  border-bottom:1px solid var(--border);
+}
+.day-name { font-size:10px; color:var(--muted); text-transform:uppercase; letter-spacing:0.5px; font-weight:600; }
+.day-num { font-size:18px; font-weight:700; color:var(--white); margin-top:1px; font-family:'DM Mono',monospace; }
+.day-col.today .day-num { color:var(--teal); }
+.day-pills { padding:8px 6px; display:flex; flex-direction:column; gap:4px; }
+.day-pill {
+  display:flex; align-items:center; gap:5px;
+  padding:4px 6px; border-radius:5px;
+  font-size:10px; font-weight:500; cursor:pointer;
+  transition:opacity .2s;
+}
+.day-pill.taken { opacity:0.45; text-decoration:line-through; }
+.pill-dot { width:6px; height:6px; border-radius:50%; flex-shrink:0; }
+
+.reminder-card {
+  background:var(--card); border:1px solid var(--border);
+  border-radius:var(--radius); overflow:hidden; margin-bottom:14px;
+}
+.reminder-item {
+  display:flex; align-items:center; gap:14px;
+  padding:13px 18px; border-bottom:1px solid var(--border);
+  transition:background .2s;
+}
+.reminder-item:last-child { border-bottom:none; }
+.reminder-icon {
+  width:38px; height:38px; border-radius:10px;
+  display:flex; align-items:center; justify-content:center;
+  font-size:18px; flex-shrink:0;
+}
+.reminder-info { flex:1; }
+.reminder-title { font-size:13px; font-weight:600; color:var(--white); }
+.reminder-sub { font-size:11px; color:var(--muted); margin-top:2px; }
+.reminder-time { font-family:'DM Mono',monospace; font-size:12px; color:var(--muted); }
+.reminder-badge {
+  padding:3px 9px; border-radius:20px;
+  font-size:10px; font-weight:700;
+}
+.badge-upcoming { background:rgba(59,142,255,0.12); color:var(--blue); border:1px solid rgba(59,142,255,0.2); }
+.badge-today { background:rgba(0,201,177,0.1); color:var(--teal); border:1px solid rgba(0,201,177,0.2); }
+.badge-done { background:rgba(46,216,138,0.08); color:var(--green); border:1px solid rgba(46,216,138,0.18); }
+
 
 @keyframes pulse { 0%,100% { opacity:1; } 50% { opacity:0.4; } }
 
@@ -590,7 +644,7 @@ body {
   <div class="login-box">
     <div class="login-logo">
       <div class="login-logo-dot"></div>
-      <span>CareLoop</span>
+      <span>Docly</span>
     </div>
     <div class="login-title">Welcome back</div>
     <div class="login-sub">Sign in to your account to continue</div>
@@ -623,7 +677,7 @@ body {
     <div class="sidebar-header">
       <div class="sidebar-logo">
         <div class="sidebar-logo-dot"></div>
-        <div class="sidebar-logo-text">CareLoop</div>
+        <div class="sidebar-logo-text">Docly</div>
       </div>
       <div class="sidebar-user" id="sidebar-user">
         <div class="sidebar-avatar" id="sidebar-avatar" style="background:var(--blue)">DR</div>
@@ -699,7 +753,8 @@ const patientNav = [
     { id:'p-home', label:'Home', icon:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>' },
     { id:'p-log', label:'Symptom Log', icon:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>' },
     { id:'p-visits', label:'My Visits', icon:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>' },
-    { id:'p-ai', label:'Ask CareLoop AI', icon:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>' },
+    { id:'p-meds', label:'Medications', icon:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"/></svg>' },
+    { id:'p-ai', label:'Ask Docly AI', icon:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>' },
   ]},
 ];
 
@@ -751,11 +806,11 @@ function setupUser() {
 
   if (currentRole === 'doctor') {
     chatHistory = [
-      { role:'assistant', text:'Hello Dr. Sarah! I\'m your CareLoop AI assistant. I can help you prepare for consultations, summarize patient histories, check drug interactions, and answer clinical questions. How can I help today?', time:'09:00' }
+      { role:'assistant', text:'Hello Dr. Sarah! I\'m your Docly AI assistant. I can help you prepare for consultations, summarize patient histories, check drug interactions, and answer clinical questions. How can I help today?', time:'09:00' }
     ];
   } else {
     chatHistory = [
-      { role:'assistant', text:'Hi Camille! 👋 I\'m your CareLoop AI companion. I can help you understand your symptoms, explain your treatment plan, answer questions about your medications, and remind you what to watch for. What\'s on your mind?', time:'09:00' }
+      { role:'assistant', text:'Hi Camille! 👋 I\'m your Docly AI companion. I can help you understand your symptoms, explain your treatment plan, answer questions about your medications, and remind you what to watch for. What\'s on your mind?', time:'09:00' }
     ];
   }
 }
@@ -770,7 +825,7 @@ function navigateTo(pageId) {
   const titles = {
     dashboard:'Dashboard', consultation:'Consultation', 'patient-summary':'Patient Summary',
     'drug-checker':'Drug Checker', 'ai-assistant':'AI Assistant', 'all-patients':'All Patients',
-    'p-home':'My Health', 'p-log':'Symptom Log', 'p-visits':'My Visits', 'p-ai':'Ask CareLoop AI'
+    'p-home':'My Health', 'p-log':'Symptom Log', 'p-visits':'My Visits', 'p-ai':'Ask Docly AI'
   };
   document.getElementById('topbar-title').textContent = titles[pageId] || pageId;
 
@@ -792,6 +847,7 @@ function navigateTo(pageId) {
   else if (pageId === 'p-home') renderPatientHome();
   else if (pageId === 'p-log') renderSymptomLog();
   else if (pageId === 'p-visits') renderPatientVisits();
+  else if (pageId === 'p-meds') renderMedications();
   else if (pageId === 'p-ai') renderAIAssistant('patient');
 }
 
@@ -969,7 +1025,7 @@ let recSeconds = 0;
 const transcriptLines = [
   { speaker:'Dr. Sarah', role:'doctor', text:'Good morning Marcus! How have you been feeling since our last visit?' },
   { speaker:'Marcus', role:'patient', text:'Morning doctor. The arm is healing, I think. But I\'ve been quite tired, and I noticed some swelling in my ankles again.' },
-  { speaker:'Dr. Sarah', role:'doctor', text:'I can see that — CareLoop flagged your symptom log. How long has the ankle swelling been happening?' },
+  { speaker:'Dr. Sarah', role:'doctor', text:'I can see that — Docly flagged your symptom log. How long has the ankle swelling been happening?' },
   { speaker:'Marcus', role:'patient', text:'About 10 days, maybe two weeks. It\'s mostly in the evenings.' },
   { speaker:'Dr. Sarah', role:'doctor', text:'And your blood pressure — you\'ve been logging it, which is great. I see it\'s been averaging around 142 over 88.' },
   { speaker:'Marcus', role:'patient', text:'Yes, I know it\'s a bit high. I\'ve been stressed with work.' },
@@ -1045,7 +1101,7 @@ function generateSummary() {
 }
 
 function sendPlanToPatient() {
-  showToast('✉ Post-visit plan sent to Marcus T. via CareLoop app');
+  showToast('✉ Post-visit plan sent to Marcus T. via Docly app');
 }
 
 function renderPatientSummary() {
@@ -1096,7 +1152,7 @@ function renderPatientSummary() {
         <div class="timeline">
           ${renderTimeline('Today','Consultation — Anxiety follow-up','Discussed increased anxiety at work. Migraine frequency stable at 2/month. Sertraline working. No changes to meds.')}
           ${renderTimeline('Apr 10','Consultation — Migraine review','Frequency reduced from 4/month to 2/month since starting Propranolol. Sumatriptan used twice.')}
-          ${renderTimeline('Mar 5','Consultation — Initial AI onboarding','Set up CareLoop symptom logger. Baseline recorded. Started Sertraline.')}
+          ${renderTimeline('Mar 5','Consultation — Initial AI onboarding','Set up Docly symptom logger. Baseline recorded. Started Sertraline.')}
         </div>
       </div>
     </div>
@@ -1196,7 +1252,7 @@ function checkInteractions() {
     <div><div class="alert-title">INFO: Timing</div>
     <div class="alert-desc">Metformin should be taken with meals to reduce GI side effects. Lisinopril is best taken at the same time daily.</div></div>
   </div>
-  <div style="padding:12px 18px;"><div style="font-size:10px;color:var(--muted);">⚡ Powered by CareLoop AI · Based on EMA guidelines 2024 · Always verify with clinical judgment</div></div>`;
+  <div style="padding:12px 18px;"><div style="font-size:10px;color:var(--muted);">⚡ Powered by Docly AI · Based on EMA guidelines 2024 · Always verify with clinical judgment</div></div>`;
 }
 
 function renderAllPatients() {
@@ -1290,7 +1346,7 @@ function renderPatientHome() {
         <div style="padding:16px;display:flex;align-items:center;gap:12px;">
           <div style="width:40px;height:40px;border-radius:12px;background:rgba(0,201,177,0.1);display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0;">🤖</div>
           <div>
-            <div style="font-size:13px;font-weight:600;color:var(--white);">Ask CareLoop AI</div>
+            <div style="font-size:13px;font-weight:600;color:var(--white);">Ask Docly AI</div>
             <div style="font-size:11px;color:var(--muted);margin-top:2px;">Questions about your health, meds, symptoms</div>
           </div>
           <div style="margin-left:auto;color:var(--muted);">→</div>
@@ -1410,7 +1466,7 @@ function renderPatientVisits() {
       ${[
         { date:'Today — May 16', doc:'Dr. Sarah M.', summary:'Anxiety follow-up. Migraines stable at 2/month. Sertraline effective. No medication changes.', plan:true },
         { date:'Apr 10, 2025', doc:'Dr. Sarah M.', summary:'Migraine review. Propranolol started 2 months ago — good response. Frequency reduced by 50%.', plan:true },
-        { date:'Mar 5, 2025', doc:'Dr. Sarah M.', summary:'Initial consultation. Symptom baseline established. Started Sertraline 50mg. CareLoop setup.', plan:false },
+        { date:'Mar 5, 2025', doc:'Dr. Sarah M.', summary:'Initial consultation. Symptom baseline established. Started Sertraline 50mg. Docly setup.', plan:false },
       ].map(v=>`
       <div style="padding:16px 20px;border-bottom:1px solid var(--border);">
         <div style="display:flex;align-items:center;gap:10px;margin-bottom:8px;">
@@ -1497,8 +1553,8 @@ async function sendChat() {
 
   try {
     const systemPrompt = currentRole === 'doctor'
-      ? `You are CareLoop AI, a clinical assistant for Dr. Sarah M., a General Practitioner in Paris. You help with patient summaries, drug interactions (always mention to consult EMA guidelines), clinical decision support, and documentation. Be concise, professional, evidence-based. Mention HDS compliance when relevant. Current patient context: Camille F. (26, anxiety + migraines), Marcus T. (52, hypertension + fracture).`
-      : `You are CareLoop AI, a friendly health companion for Camille, a 26-year-old patient managing anxiety and migraines in Paris. Help her understand her symptoms, medications (Sumatriptan, Propranolol, Sertraline), and care plan. Be warm, simple, and non-alarmist. Always recommend contacting Dr. Sarah for medical decisions. Never diagnose.`;
+      ? `You are Docly AI, a clinical assistant for Dr. Sarah M., a General Practitioner in Paris. You help with patient summaries, drug interactions (always mention to consult EMA guidelines), clinical decision support, and documentation. Be concise, professional, evidence-based. Mention HDS compliance when relevant. Current patient context: Camille F. (26, anxiety + migraines), Marcus T. (52, hypertension + fracture).`
+      : `You are Docly AI, a friendly health companion for Camille, a 26-year-old patient managing anxiety and migraines in Paris. Help her understand her symptoms, medications (Sumatriptan, Propranolol, Sertraline), and care plan. Be warm, simple, and non-alarmist. Always recommend contacting Dr. Sarah for medical decisions. Never diagnose.`;
 
     const resp = await fetch('https://api.anthropic.com/v1/messages', {
       method:'POST',
@@ -1521,10 +1577,151 @@ async function sendChat() {
     chatHistory.push({ role:'assistant', text: reply.replace(/\n/g,'<br>'), time:new Date().toLocaleTimeString('fr-FR',{hour:'2-digit',minute:'2-digit'}) });
   } catch(e) {
     chatHistory = chatHistory.filter(m => !m.text.includes('typing-dots'));
-    chatHistory.push({ role:'assistant', text:'I\'m here to help! (Note: AI connection unavailable in demo mode — but in production CareLoop AI would answer your question in real time.)', time:now });
+    chatHistory.push({ role:'assistant', text:'I\'m here to help! (Note: AI connection unavailable in demo mode — but in production Docly AI would answer your question in real time.)', time:now });
   }
 
   renderAIAssistant(currentRole);
+}
+
+
+// ══ MEDICATIONS PAGE ═══════════════════════
+const days = ['Mon','Tue','Wed','Thu','Fri','Sat','Sun'];
+const dayNums = [12,13,14,15,16,17,18];
+const todayIdx = 4; // Friday = index 4
+
+const medSchedule = [
+  { name:'Sertraline', dose:'50mg', color:'#00c9b1', time:'Morning', days:[0,1,2,3,4,5,6] },
+  { name:'Propranolol', dose:'40mg', color:'#3b8eff', time:'Morning', days:[0,1,2,3,4,5,6] },
+  { name:'Magnesium', dose:'300mg', color:'#ffb547', time:'Evening', days:[0,1,2,3,4,5,6] },
+  { name:'Sumatriptan', dose:'50mg', color:'#ff5a5a', time:'PRN', days:[] },
+  { name:'Vit D3', dose:'1000IU', color:'#f97316', time:'Morning', days:[0,2,4,6] },
+  { name:'Omega-3', dose:'1g', color:'#8b5cf6', time:'Evening', days:[0,1,2,3,4,5,6] },
+];
+
+// track which pills are marked taken: key = "dayIdx-medIdx"
+let takenPills = { '0-0':true,'0-1':true,'0-2':true,'1-0':true,'1-1':true,'2-0':true,'2-1':true,'3-0':true,'3-1':true,'3-2':true };
+
+function togglePill(dayIdx, medIdx) {
+  const key = dayIdx+'-'+medIdx;
+  takenPills[key] = !takenPills[key];
+  renderMedications();
+}
+
+function renderMedications() {
+  const todayMeds = medSchedule.filter((m,i) => m.days.includes(todayIdx));
+  const takenToday = todayMeds.filter((m,i) => takenPills['4-'+medSchedule.indexOf(m)]).length;
+
+  document.getElementById('content-area').innerHTML = `
+  <div class="mb-14" style="display:flex;align-items:center;justify-content:space-between;">
+    <div>
+      <div style="font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:3px;">Week of May 12–18</div>
+      <div style="font-size:18px;font-weight:600;color:var(--white);">Medication Schedule</div>
+    </div>
+    <div style="background:var(--card);border:1px solid var(--border);border-radius:10px;padding:10px 18px;text-align:center;">
+      <div style="font-size:22px;font-weight:700;color:var(--teal);font-family:'DM Mono',monospace;">${takenToday}/${todayMeds.length}</div>
+      <div style="font-size:10px;color:var(--muted);margin-top:2px;">taken today</div>
+    </div>
+  </div>
+
+  <div class="week-strip mb-14">
+    ${days.map((d,di) => {
+      const medsForDay = medSchedule.filter(m => m.days.includes(di));
+      const isToday = di === todayIdx;
+      return `<div class="day-col${isToday?' today':''}">
+        <div class="day-header">
+          <div class="day-name">${d}</div>
+          <div class="day-num">${dayNums[di]}</div>
+        </div>
+        <div class="day-pills">
+          ${medsForDay.map(m => {
+            const mi = medSchedule.indexOf(m);
+            const key = di+'-'+mi;
+            const taken = !!takenPills[key];
+            return `<div class="day-pill${taken?' taken':''}" onclick="togglePill(${di},${mi})" title="${m.name} ${m.dose}">
+              <div class="pill-dot" style="background:${m.color}"></div>
+              ${m.name.split(' ')[0]}
+            </div>`;
+          }).join('')}
+          ${medsForDay.length===0?`<div style="font-size:10px;color:var(--muted2);padding:4px;">Rest day</div>`:''}
+        </div>
+      </div>`;
+    }).join('')}
+  </div>
+
+  <div class="two-col" style="align-items:start;gap:14px;">
+    <div>
+      <div style="font-size:12px;font-weight:600;color:var(--white);margin-bottom:10px;">💊 My Medications</div>
+      <div class="reminder-card">
+        ${medSchedule.map((m,i) => `
+        <div class="reminder-item">
+          <div class="reminder-icon" style="background:${m.color}22;">
+            <div style="width:10px;height:10px;border-radius:50%;background:${m.color};"></div>
+          </div>
+          <div class="reminder-info">
+            <div class="reminder-title">${m.name} <span style="font-weight:400;color:var(--muted)">${m.dose}</span></div>
+            <div class="reminder-sub">${m.time}${m.days.length===7?' · Every day':m.days.length===0?' · Only when needed':' · '+m.days.length+'× per week'}</div>
+          </div>
+          ${m.days.length>0&&m.days.includes(todayIdx)?`<span class="reminder-badge ${takenPills['4-'+i]?'badge-done':'badge-today'}">${takenPills['4-'+i]?'✓ Taken':'Today'}</span>`:'<span class="reminder-badge" style="background:rgba(255,255,255,0.04);color:var(--muted2);border:1px solid var(--border);">PRN</span>'}
+        </div>`).join('')}
+      </div>
+    </div>
+
+    <div style="display:flex;flex-direction:column;gap:14px;">
+      <div>
+        <div style="font-size:12px;font-weight:600;color:var(--white);margin-bottom:10px;">🔔 Upcoming Reminders</div>
+        <div class="reminder-card">
+          <div class="reminder-item">
+            <div class="reminder-icon" style="background:rgba(59,142,255,0.1);">📅</div>
+            <div class="reminder-info">
+              <div class="reminder-title">Appointment — Dr. Sarah M.</div>
+              <div class="reminder-sub">In 7 days · Thursday May 22 · 10:30</div>
+            </div>
+            <span class="reminder-badge badge-upcoming">In 7 days</span>
+          </div>
+          <div class="reminder-item">
+            <div class="reminder-icon" style="background:rgba(255,181,71,0.1);">🩺</div>
+            <div class="reminder-info">
+              <div class="reminder-title">Blood test — Labo Bio+</div>
+              <div class="reminder-sub">In 3 days · Monday May 19 · 08:00</div>
+            </div>
+            <span class="reminder-badge badge-upcoming">In 3 days</span>
+          </div>
+          <div class="reminder-item">
+            <div class="reminder-icon" style="background:rgba(0,201,177,0.1);">💊</div>
+            <div class="reminder-info">
+              <div class="reminder-title">Sertraline refill needed</div>
+              <div class="reminder-sub">Prescription expires May 28</div>
+            </div>
+            <span class="reminder-badge" style="background:rgba(255,90,90,0.1);color:var(--red);border:1px solid rgba(255,90,90,0.2);">12 days</span>
+          </div>
+          <div class="reminder-item">
+            <div class="reminder-icon" style="background:rgba(46,216,138,0.08);">✅</div>
+            <div class="reminder-info">
+              <div class="reminder-title">Symptom log sent to Dr. Sarah</div>
+              <div class="reminder-sub">Today at 09:00 — auto-sent</div>
+            </div>
+            <span class="reminder-badge badge-done">Done</span>
+          </div>
+        </div>
+      </div>
+
+      <div>
+        <div style="font-size:12px;font-weight:600;color:var(--white);margin-bottom:10px;">📊 This Week's Adherence</div>
+        <div style="background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:18px 20px;">
+          <div style="display:flex;align-items:flex-end;gap:6px;height:60px;margin-bottom:8px;">
+            ${[100,100,85,100,66,0,0].map((v,i)=>`<div style="flex:1;border-radius:3px 3px 0 0;background:${i===todayIdx?'var(--teal)':v===100?'rgba(0,201,177,0.35)':v>0?'rgba(255,181,71,0.4)':'rgba(255,255,255,0.05)'};height:${Math.max(v,5)}%;transition:height .4s;" title="${days[i]}: ${v}%"></div>`).join('')}
+          </div>
+          <div style="display:flex;justify-content:space-between;font-size:10px;color:var(--muted);">
+            ${days.map(d=>`<span>${d}</span>`).join('')}
+          </div>
+          <div style="margin-top:12px;padding-top:12px;border-top:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;">
+            <span style="font-size:12px;color:var(--muted)">Weekly adherence</span>
+            <span style="font-size:18px;font-weight:700;color:var(--teal);font-family:'DM Mono',monospace;">90%</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>`;
 }
 
 // ══ UTILS ══════════════════════════════════

@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Relevo Health</title>
+<title>Docly</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;1,300&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
@@ -810,11 +810,11 @@ function setupUser() {
 
   if (currentRole === 'doctor') {
     chatHistory = [
-      { role:'assistant', text:'Hello Dr. Sarah! I\'m your Relevo AI assistant. I can help you prepare for consultations, summarize patient histories, check drug interactions, and answer clinical questions. How can I help today?', time:'09:00' }
+      { role:'assistant', text:'Hello Dr. Sarah! I\'m your Docly AI assistant. I can help you prepare for consultations, summarize patient histories, check drug interactions, and answer clinical questions. How can I help today?', time:'09:00' }
     ];
   } else {
     chatHistory = [
-      { role:'assistant', text:'Hi Camille! 👋 I\'m your Relevo AI companion. I can help you understand your symptoms, explain your treatment plan, answer questions about your medications, and remind you what to watch for. What\'s on your mind?', time:'09:00' }
+      { role:'assistant', text:'Hi Camille! 👋 I\'m your Docly AI companion. I can help you understand your symptoms, explain your treatment plan, answer questions about your medications, and remind you what to watch for. What\'s on your mind?', time:'09:00' }
     ];
   }
 }
@@ -1105,7 +1105,7 @@ function generateSummary() {
 }
 
 function sendPlanToPatient() {
-  showToast('✉ Post-visit plan sent to Marcus T. via Relevo app');
+  showToast('✉ Post-visit plan sent to Marcus T. via Docly app');
 }
 
 function renderPatientSummary() {
@@ -1156,7 +1156,7 @@ function renderPatientSummary() {
         <div class="timeline">
           ${renderTimeline('Today','Consultation — Anxiety follow-up','Discussed increased anxiety at work. Migraine frequency stable at 2/month. Sertraline working. No changes to meds.')}
           ${renderTimeline('Apr 10','Consultation — Migraine review','Frequency reduced from 4/month to 2/month since starting Propranolol. Sumatriptan used twice.')}
-          ${renderTimeline('Mar 5','Consultation — Initial AI onboarding','Set up Relevo symptom logger. Baseline recorded. Started Sertraline.')}
+          ${renderTimeline('Mar 5','Consultation — Initial AI onboarding','Set up Docly symptom logger. Baseline recorded. Started Sertraline.')}
         </div>
       </div>
     </div>
@@ -1256,7 +1256,7 @@ function checkInteractions() {
     <div><div class="alert-title">INFO: Timing</div>
     <div class="alert-desc">Metformin should be taken with meals to reduce GI side effects. Lisinopril is best taken at the same time daily.</div></div>
   </div>
-  <div style="padding:12px 18px;"><div style="font-size:10px;color:var(--muted);">⚡ Powered by Relevo AI · Based on EMA guidelines 2024 · Always verify with clinical judgment</div></div>`;
+  <div style="padding:12px 18px;"><div style="font-size:10px;color:var(--muted);">⚡ Powered by Docly AI · Based on EMA guidelines 2024 · Always verify with clinical judgment</div></div>`;
 }
 
 function renderAllPatients() {
@@ -1557,8 +1557,8 @@ async function sendChat() {
 
   try {
     const systemPrompt = currentRole === 'doctor'
-      ? `You are Relevo AI, a clinical assistant for Dr. Sarah M., a General Practitioner in Paris. You help with patient summaries, drug interactions (always mention to consult EMA guidelines), clinical decision support, and documentation. Be concise, professional, evidence-based. Mention HDS compliance when relevant. Current patient context: Camille F. (26, anxiety + migraines), Marcus T. (52, hypertension + fracture).`
-      : `You are Relevo AI, a friendly health companion for Camille, a 26-year-old patient managing anxiety and migraines in Paris. Help her understand her symptoms, medications (Sumatriptan, Propranolol, Sertraline), and care plan. Be warm, simple, and non-alarmist. Always recommend contacting Dr. Sarah for medical decisions. Never diagnose.`;
+      ? `You are Docly AI, a clinical assistant for Dr. Sarah M., a General Practitioner in Paris. You help with patient summaries, drug interactions (always mention to consult EMA guidelines), clinical decision support, and documentation. Be concise, professional, evidence-based. Mention HDS compliance when relevant. Current patient context: Camille F. (26, anxiety + migraines), Marcus T. (52, hypertension + fracture).`
+      : `You are Docly AI, a friendly health companion for Camille, a 26-year-old patient managing anxiety and migraines in Paris. Help her understand her symptoms, medications (Sumatriptan, Propranolol, Sertraline), and care plan. Be warm, simple, and non-alarmist. Always recommend contacting Dr. Sarah for medical decisions. Never diagnose.`;
 
     const resp = await fetch('https://api.anthropic.com/v1/messages', {
       method:'POST',
@@ -1581,7 +1581,7 @@ async function sendChat() {
     chatHistory.push({ role:'assistant', text: reply.replace(/\n/g,'<br>'), time:new Date().toLocaleTimeString('fr-FR',{hour:'2-digit',minute:'2-digit'}) });
   } catch(e) {
     chatHistory = chatHistory.filter(m => !m.text.includes('typing-dots'));
-    chatHistory.push({ role:'assistant', text:'I\'m here to help! (Note: AI connection unavailable in demo mode — but in production Relevo AI would answer your question in real time.)', time:now });
+    chatHistory.push({ role:'assistant', text:'I\'m here to help! (Note: AI connection unavailable in demo mode — but in production Docly AI would answer your question in real time.)', time:now });
   }
 
   renderAIAssistant(currentRole);
